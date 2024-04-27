@@ -68,7 +68,8 @@ int countChrFile(char *argv[])
 
 	
 	while((c = fgetc(fil)) != EOF)
-		cont++;
+		if(c != ' ' && c != '\n')
+			cont++;
 
 	fclose(fil);
 		
@@ -84,10 +85,11 @@ void fileToArr(char *argv[],char *arr)
 	fil = fopen(*++argv,"r");
 
 	while((c = fgetc(fil)) != EOF)
-	{
-		*(arr + i) = c;
-		i++;
-	}
+		if(c != ' ' && c != '\n')
+		{
+			*(arr + i) = c;
+			i++;
+		}
 
 	*(arr + i) = '\0';
 
