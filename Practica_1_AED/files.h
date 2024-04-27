@@ -74,7 +74,7 @@ void insertionSortStr(char *insert, int n)
 	char aux;
 
 		for(i = 1; i < n; i++)
-			for(j = i-1; j >= 0; j++)
+			for(j = i-1; j >= 0; j--)
 				if(*(insert+i) < *(insert+j))
 				{
 					aux = *(insert+i);
