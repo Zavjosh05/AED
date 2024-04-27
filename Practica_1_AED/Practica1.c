@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-	BubbleSort_File(argv);	
+	sortFile(argv);	
 	
 	return 0;
 }

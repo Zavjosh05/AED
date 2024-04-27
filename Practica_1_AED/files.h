@@ -48,7 +48,7 @@ int strlenJ(char *arr)
 	return count;
 }
 
-void BubbleSortChar(char *bub,int n)
+void bubbleSortStr(char *bub,int n)
 {
 	int i,j;
 
@@ -56,6 +56,33 @@ void BubbleSortChar(char *bub,int n)
 		for(j = 0; j < n-1; j++)
 			if(*(bub + j) > *(bub + j + 1))
 				swapchr(bub+j,bub+j+1);
+}
+
+void selectionSortStr(char *select,int n)
+{
+	int i,j;
+
+	for(i = 0; i < n; i++)
+		for(j = i+1; j < n; j++)
+			if(*(select+i) > *(select+j))
+				swapchr(select+i,select+j);
+}
+
+void insertionSortStr(char *insert, int n)
+{
+	int i,j,k;
+	char aux;
+
+		for(i = 1; i < n; i++)
+			for(j = i-1; j >= 0; j++)
+				if(*(insert+i) < *(insert+j))
+				{
+					aux = *(insert+i);
+					for(k = i; k > j; k--)
+						*(insert+k) = *(insert+k-1);
+					
+					*(insert+j) = aux;
+				}
 }
 
 int countChrFile(char *argv[])
@@ -96,13 +123,13 @@ void fileToArr(char *argv[],char *arr)
 	fclose(fil);
 }
 
-void ArrToFile(char *argv[], char *arr)
+void ArrToFile(char *argv, char *arr)
 {
 	int i = 0;
 	char c;
 	FILE *fil;
 
-	fil = fopen(*++argv, "w");
+	fil = fopen(argv, "w");
 
 	while(*(arr+i) != '\0')
 	{
@@ -113,7 +140,28 @@ void ArrToFile(char *argv[], char *arr)
 	fclose(fil);
 }
 
-void BubbleSort_File(char *argv[])
+void bubbleProcess(char *arr, int n)
+{
+	bubbleSortStr(arr,n);
+
+	ArrToFile("BubbleSort.txt",arr);
+}
+
+void selectionProcess(char *arr,int n)
+{
+	selectionSortStr(arr,n);
+
+	ArrToFile("SelectionSort.txt",arr);
+}
+
+void insertionProcess(char *arr,int n)
+{
+	insertionSortStr(arr, n);
+
+	ArrToFile("InsertionSort.txt",arr);
+}
+
+void sortFile(char *argv[])
 {
 	int n;
 	char *arr;
@@ -125,9 +173,11 @@ void BubbleSort_File(char *argv[])
 
 	fileToArr(argv, arr);
 
-	BubbleSortChar(arr,n);
-	
-	ArrToFile(++argv,arr);
+	bubbleProcess(arr,n);
+
+	selectionProcess(arr,n);
+
+	insertionProcess(arr,n);
 }
 
 
