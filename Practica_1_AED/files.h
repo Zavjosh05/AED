@@ -13,13 +13,39 @@ FILE* WRFile(char *argv[])
 	return fopen(*argv,"r+");
 }
 
-void Swapchr(char *a1,char *a2)
+void swapchr(char *a1,char *a2)
 {
 	char t;
 
 	t = *a1;
 	*a1 = *a2;
 	*a2 = t;
+}
+
+void printArr(char *arr)
+{
+	int i = 0;
+
+	while(*(arr + i) != '\0')
+	{
+		putchar(*(arr + i));
+		i++;
+	}
+	putchar('\n');
+}
+
+//no jala :,v
+int strlenJ(char *arr)
+{
+	int i = 0, count = 0;
+
+	while(*(arr+i) != '\0')
+	{
+		count++;
+		printf("%d\n",count);
+	}	
+
+	return count;
 }
 
 void BubbleSortChar(char *bub,int n)
@@ -29,10 +55,10 @@ void BubbleSortChar(char *bub,int n)
 	for(i = 0; i < n; i++)
 		for(j = 0; j < n-1; j++)
 			if(*(bub + j) > *(bub + j + 1))
-				Swapchr(bub+j,bub+j+1);
+				swapchr(bub+j,bub+j+1);
 }
 
-int ContCharFile(char *argv[])
+int countChrFile(char *argv[])
 {
 	char c;
 	int cont = 0;
@@ -49,35 +75,37 @@ int ContCharFile(char *argv[])
 	return cont;
 }
 
-void FileToArr(char *argv[],char *arr, int n)
+void fileToArr(char *argv[],char *arr)
 {
-	int i;
+	int i = 0;
 	char c;
 	FILE *fil;
 
 	fil = fopen(*++argv,"r");
 
-	for(i = 0; i < n; i++)
+	while((c = fgetc(fil)) != EOF)
 	{
-		c = fgetc(fil);
-		printf("%c\n",c);
 		*(arr + i) = c;
-		printf("%s\n",arr);
+		i++;
 	}
-	printf("%s\n",arr);
+
+	*(arr + i) = '\0';
+
 	fclose(fil);
 }
 
 void ArrToFile(char *argv[], char *arr)
 {
-	int i;
+	int i = 0;
+	char c;
 	FILE *fil;
 
 	fil = fopen(*++argv, "w");
-	
-	for(i = 0; i < sizeof(arr); i++){
-		fputc(*(arr + i), fil);
-		printf("%c\n", *(arr +i));
+
+	while(*(arr+i) != '\0')
+	{
+		fputc(*(arr+i),fil);
+		i++;
 	}
 
 	fclose(fil);
@@ -88,16 +116,16 @@ void BubbleSort_File(char *argv[])
 	int n;
 	char *arr;
 
-	n = ContCharFile(argv);
-	printf("%d\n", n);
+	n = countChrFile(argv);
+	printf("%d\n",n);
 
-	arr = (char*)malloc(n*sizeof(char));
-	
-	FileToArr(argv, arr, n);
+	arr = (char*)malloc(n*sizeof(char));	
 
-	printf("%s\n",arr);
+	fileToArr(argv, arr);
 
-	//BubbleSortChar(arr,n);
+	BubbleSortChar(arr,n);
 	
 	ArrToFile(++argv,arr);
 }
+
+
