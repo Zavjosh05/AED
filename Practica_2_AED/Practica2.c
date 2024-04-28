@@ -204,7 +204,7 @@ int rowAvailability(queen q, int lvl)
 
 	for(i = 0; i < q.n; i++)
 		if(q.chessboard[lvl][i] == 0)
-			return 1;
+			return i+1;
 	return 0;
 }
 
@@ -214,7 +214,10 @@ int queensProblem(queen *q, int lvl, int state)
 	int i;
 
 	if(lvl == q->n - 1)
-		return 1;
+  if(rowAvailavility(*q,lvl)) {
+				queenPositioning(q,lvl,rowAvailability()-1);
+		  return 1 + queensProblem(q, lvl-1, 0);
+}
 	else
 		if(lvl == 0)
 			if(state == 0)
