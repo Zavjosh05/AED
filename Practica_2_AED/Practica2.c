@@ -214,16 +214,21 @@ int queensProblem(queen *q, int lvl, int state)
 	int i;
 
 	if(lvl == q->n - 1)
-  if(rowAvailavility(*q,lvl)) {
-				queenPositioning(q,lvl,rowAvailability()-1);
-		  return 1 + queensProblem(q, lvl-1, 0);
-}
+  		if(rowAvailavility(*q,lvl)) {
+			queenPositioning(q,lvl,rowAvailability()-1);
+			return 1 + queensProblem(q, lvl-1, 0);
+		}
+		else
+		{
+			return queensProblem(q, lvl-1, 0);
+		}
 	else
 		if(lvl == 0)
 			if(state == 0)
-				for(i = 0; i < q->n; i++){
+				for(i = 0; i < q->n; i++)
+				{
 					queenPositioning(q,lvl,i);
-					return queensProblem;
+					return queensProblem(q,lvl,);
 				}
 
 	{
