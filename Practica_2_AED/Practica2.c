@@ -225,7 +225,8 @@ int queenCount(queen q)
 	return count;
 }
 
-//state = 1 -> keep in the way, = 0 reset and try the next one
+
+
 int queensProblem(queen *q, int lvl)
 {
 	int i,j, count = 0, qcount;
@@ -237,10 +238,10 @@ int queensProblem(queen *q, int lvl)
 	{
 		qcount = rowAvailability(*q,lvl);
 		if(qcount){
-			queenPositioning(q,lvl,qcount);
+			queenPositioning(q,lvl,qcount-1);
 			printChessboardNums(*q);
 			//getchar();
-			eliminateQueen(q,lvl,qcount);
+			eliminateQueen(q,lvl,qcount-1);
 			return 1;
 		}
 	}
