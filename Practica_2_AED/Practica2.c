@@ -11,6 +11,7 @@ void createChessboard(queen*);
 void fillZero(queen*);
 void printChessboardNums(queen);
 void printChessboard(queen);
+void printChessScreen(queen);
 void queenPositioning(queen*,int,int);
 void eliminateQueen(queen*,int,int);
 int checkQueenPositioning(queen,int,int);
@@ -28,7 +29,7 @@ int main(int argc, char **argv)
 	createChessboard(&q);
 	fillZero(&q);
 	printf("numero de combinaciones = %d\n",queensProblem(&q,0));
-	printChessboard(q);
+	//printChessboard(q);
 
 	return 0;
 }
@@ -80,7 +81,7 @@ void printChessboard(queen q)
 {
 	int i,j;
 
-	printf("Tablero %d x %d\n",q.n,q.n);
+	putchar('\n');
 
 	for(i = 0; i < q.n; i++){
 		for(j = 0; j < q.n; j++)
@@ -93,6 +94,15 @@ void printChessboard(queen q)
 				printf("%c%c",241,241);
 		putchar('\n');
 	}
+}
+
+void printChessScreen(queen q)
+{
+	system("cls");
+
+	printf("Tablero %d x %d\n",q.n,q.n);
+
+	printChessboard(q);
 }
 
 void queenPositioning(queen *q, int m, int n)
@@ -239,8 +249,8 @@ int queensProblem(queen *q, int lvl)
 		qcount = rowAvailability(*q,lvl);
 		if(qcount){
 			queenPositioning(q,lvl,qcount-1);
-			printChessboardNums(*q);
-			//getchar();
+			printChessScreen(*q);
+			system("pause");
 			eliminateQueen(q,lvl,qcount-1);
 			return 1;
 		}
@@ -250,7 +260,7 @@ int queensProblem(queen *q, int lvl)
 		for(i = 0; i < q->n; i++)
 			if(q->chessboard[lvl][i] == 0){
 				queenPositioning(q,lvl,i);
-				printChessboard(*q);
+				printChessScreen(*q);
 				count += queensProblem(q,lvl+1);
 				eliminateQueen(q,lvl,i);
 			}
