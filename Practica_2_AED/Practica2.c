@@ -235,40 +235,24 @@ int queensProblem(queen *q, int lvl)
 
 	if(lvl == q->n - 1)
 	{
-		if(rowAvailability(*q,lvl)){
-			queenPositioning(q,lvl,rowAvailability(*q,lvl)-1);
+		qcount = rowAvailability(*q,lvl);
+		if(qcount){
+			queenPositioning(q,lvl,qcount);
 			printChessboardNums(*q);
-			getchar();
-			qcount = queenCount(*q);
-			eliminateQueen(q,lvl,rowAvailability(*q,lvl)-1);
-			if(qcount == q->n)
-				return 1;
-			else return 0;
+			//getchar();
+			eliminateQueen(q,lvl,qcount);
+			return 1;
 		}
 	}
-	else if(lvl == 0)
-		{
-			for(i = 0; i < q->n; i++)
-				if(q->chessboard[lvl][i] == 0){
-					queenPositioning(q,lvl,i);
-					printChessboardNums(*q);
-					getchar();
-					count += queensProblem(q,lvl+1);
-					eliminateQueen(q,lvl,i);
-				}
-			return count;
-		}
-		else
-		{
-			for(j = lvl; j < q->n; j++)
-				for(i = 0; i < q->n; i++)
-					if(q->chessboard[j][i] == 0){
-						queenPositioning(q,j,i);
-						printChessboardNums(*q);
-						getchar();
-						count += queensProblem(q,lvl+1);
-						eliminateQueen(q,j,i);
-					}
-			return count;
-		}
+	else 
+	{
+		for(i = 0; i < q->n; i++)
+			if(q->chessboard[lvl][i] == 0){
+				queenPositioning(q,lvl,i);
+				printChessboard(*q);
+				count += queensProblem(q,lvl+1);
+				eliminateQueen(q,lvl,i);
+			}
+		return count;
+	}
 }
