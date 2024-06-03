@@ -8,6 +8,7 @@ int n;
 
 int chessDimension();
 void createChessboard(queen*);
+void freeQueen(queen*);
 void fillZero(queen*);
 void printChessboardNums(queen);
 void printChessboard(queen);
@@ -18,18 +19,17 @@ int checkQueenPositioning(queen,int,int);
 void queenElimCheck(queen*);
 void ifExistElimQueen(queen*,int);
 int rowAvailability(queen,int);
+int queenPositionAvaliability(queen*,int,int);
 int queenCount(queen);
 int queensProblem(queen*,int);
+void queenMenu(queen*);
+void queenInic();
+void staticQueens(queen*);
 
-int main(int argc, char **argv)
+int main(void)
 {
-	queen q;
 	
-	q.n = chessDimension();
-	createChessboard(&q);
-	fillZero(&q);
-	printf("numero de combinaciones = %d\n",queensProblem(&q,0));
-	//printChessboard(q);
+	queenInic();
 
 	return 0;
 }
@@ -37,9 +37,9 @@ int main(int argc, char **argv)
 int chessDimension(){
 	int n;
 
-	printf("Ingrese la dimension del tablero\n");
+	printf("Insert chessboard dimension\n");
 	scanf("%d",&n);
-	printf("La dimension de tablero es de %d x %d\n",n,n);
+	printf("The chessboard dimensions are %d x %d\n\n",n,n);
 
 	return n;
 }
@@ -51,6 +51,20 @@ void createChessboard(queen *q)
 	q->chessboard = (int**)malloc(x*sizeof(int*));
 	for(i = 0; i < x; i++)
 		*(q->chessboard+i) = (int*)malloc(x*sizeof(int));
+}
+
+void freeQueen(queen *q)
+{
+	int i;
+
+	for(i = 0; i < q->n; i++)
+		free(*(q->chessboard + i));
+
+	free(q->chessboard);
+
+	q->n = 0;
+
+	free(q);
 }
 
 void fillZero(queen *q)
@@ -82,16 +96,26 @@ void printChessboard(queen q)
 	int i,j;
 
 	putchar('\n');
+	printf("  ");
+	for(i = 0; i < q.n; i++)
+		printf("%c ",65+i);
+	putchar('\n');
 
 	for(i = 0; i < q.n; i++){
-		for(j = 0; j < q.n; j++)
+		for(j = 0; j < q.n; j++){
+			if(j == 0)
+				printf("%d ",i+1);
 			if(q.chessboard[i][j] == 0 || q. chessboard[i][j] == 1)
 				if((i+j) % 2 == 0)
 					printf("%c%c",178,178);
 				else
 					printf("%c%c",176,176);
 			else
-				printf("%c%c",241,241);
+				if(q.chessboard[i][j] == 2)
+					printf("%c%c",241,241);
+				else
+					printf("%c%c",156,156);
+		}
 		putchar('\n');
 	}
 }
@@ -100,7 +124,7 @@ void printChessScreen(queen q)
 {
 	system("cls");
 
-	printf("Tablero %d x %d\n",q.n,q.n);
+	printf("chessboard %d x %d\n",q.n,q.n);
 
 	printChessboard(q);
 }
@@ -110,6 +134,46 @@ void queenPositioning(queen *q, int m, int n)
 	int i,j;
 
 	q->chessboard[m][n] = 2;
+
+	//cambios en columna
+	for(i = m-1; i >= 0; i--)
+		if(q->chessboard[i][n] == 0)
+			q->chessboard[i][n] = 1;
+	for(i = m+1; i < q->n; i++)
+		if(q->chessboard[i][n] == 0)
+			q->chessboard[i][n] = 1;
+	//cambios en fila
+	for(i = n-1; i >= 0; i--)
+		if(q->chessboard[m][i] == 0)
+			q->chessboard[m][i] = 1;
+	for(i = n+1; i < q->n; i++)
+		if(q->chessboard[m][i] == 0)
+			q->chessboard[m][i] = 1;
+	//cambios en diagonal
+	//ij
+	//++
+	for(i = m+1, j = n+1; i < q->n && j < q->n; i++,j++)
+		if(q->chessboard[i][j] == 0)
+			q->chessboard[i][j] = 1;
+	//+-
+	for(i = m+1, j = n-1; i < q->n && j >= 0; i++, j--)
+		if(q->chessboard[i][j] == 0)
+			q->chessboard[i][j] = 1;
+	//--
+	for(i = m-1, j = n-1; i >= 0 && j >= 0; i--, j--)
+		if(q->chessboard[i][j] == 0)
+			q->chessboard[i][j] = 1;
+	//-+
+	for(i = m-1, j = n+1; i >= 0 && j < q->n; i--, j++)
+		if(q->chessboard[i][j] == 0)
+			q->chessboard[i][j] = 1;
+}
+
+void staticQueenPositioning(queen *q, int m, int n)
+{
+	int i,j;
+
+	q->chessboard[m][n] = 3;
 
 	//cambios en columna
 	for(i = m-1; i >= 0; i--)
@@ -224,6 +288,14 @@ int rowAvailability(queen q, int lvl)
 	return 0;
 }
 
+int queenPositionAvaliability(queen *q,int i, int j)
+{
+	if(q->chessboard[i][j] == 0)
+		return 1;
+	else
+		return 0;
+}
+
 int queenCount(queen q)
 {
 	int i,j, count = 0;
@@ -234,8 +306,6 @@ int queenCount(queen q)
 				count += 1;
 	return count;
 }
-
-
 
 int queensProblem(queen *q, int lvl)
 {
@@ -250,7 +320,7 @@ int queensProblem(queen *q, int lvl)
 		if(qcount){
 			queenPositioning(q,lvl,qcount-1);
 			printChessScreen(*q);
-			system("pause");
+			//system("pause");
 			eliminateQueen(q,lvl,qcount-1);
 			return 1;
 		}
@@ -266,4 +336,84 @@ int queensProblem(queen *q, int lvl)
 			}
 		return count;
 	}
+}
+
+void staticQueens(queen *q)
+{
+	int qcount = 0,wait = 1, x, y;
+	char op;
+
+	while(wait)
+	{
+		fseek(stdin,0,SEEK_END);
+		system("cls");
+		printChessboard(*q);
+		printf("\nStatic queens = %d\n",qcount);
+		printf("Insert the coordinates of the static queen (row, col): \n");
+		scanf("%d%d",&x,&y);
+		if((x >= 0 || y >= 0)&&(x <= q->n || y <= q->n))
+		{
+			if(queenPositionAvaliability(q,x-1,y-1))
+			{
+				staticQueenPositioning(q,x-1,y-1);
+				printChessboard(*q);
+				printf("\nStatic queens = %d\n",++qcount);
+				puts("Add another static queen? (y/n)");
+				fseek(stdin,0,SEEK_END);
+				scanf("%c",&op);
+				if(op != 'y')
+					wait = 0;
+			}
+			else
+				puts("Invalid coordinates");
+			
+		}
+		else
+			printf("Ingrese coordenadas validas");
+	}
+}
+
+//int staticQueensProblem(queen *q, int lvl)
+
+void queenMenu(queen *q)
+{
+	char x;
+
+	puts("Select option");
+	printf("1. Traditional queen's problem\n2. static queens\n");
+
+	fseek(stdin,0,SEEK_END);
+	x = getchar();
+
+	switch(x)
+	{
+		case '1':
+			printf("Total of combinatios of a %dx%d chessboard = %d\n",q->n,q->n,queensProblem(q,0));
+			break;
+		case '2':
+				staticQueens(q);
+			break;
+		default:
+			system("cls");
+			printf("Unavailable option\n\n");
+			queenMenu(q);
+	}
+}
+
+void queenInic()
+{
+	queen q;
+	char x;
+	int n;
+
+	system("cls");
+	puts("Queen's problem");
+
+	q.n = chessDimension();
+	createChessboard(&q);
+	fillZero(&q);
+	
+	queenMenu(&q);
+
+	freeQueen(&q);
 }
