@@ -48,6 +48,95 @@ void insertionSortStr(char *insert, int n)
 					*(insert+j) = aux;
 				}
 }
+/*quicksort personal variation
+int checkOrder(char *arr, int n)
+{
+    int i,j;
+
+    for(i = n-1; i >= 0; i--)
+        for(j = i-1; j >= 0; j--)
+            if(arr[i] < arr[j])
+                return 1;
+    return 0;
+}
+
+int checkGreater(char *arr, int piv)
+{
+    int i;
+
+    for(i = 0; i < piv; i++)
+        if(arr[piv] < arr[i])
+            return i+1;
+    return 0;
+}
+
+void interchage(char *f, char *d)
+{
+    char aux;
+    
+    if(*(f-1) == *d)
+        swapChr(f,d);
+    else
+    {
+        aux = *(f-1);
+        *(f-1) = *f;
+        *f = *d;
+        *d = aux;
+    }
+}
+
+void quickSortStr(char *arr, int n, int pivot) //initiali, pivote = n-1
+{
+    int k;
+
+    if(checkOrder(arr, n))
+    {
+        k = checkGreater(arr,pivot);
+        if(k)
+        {
+            interchage(arr+pivot,arr+k-1);
+            quickSortStr(arr,n,pivot);
+        }
+        else
+            quickSortStr(arr,n-1,pivot-1);
+
+    }
+}
+*/
+
+void quickSortStr(char *arr, int n,int pivot)
+{
+    char *check = arr-1;
+    int i, count = -1;
+
+    for(i = 0; i < n; i++)
+        if(*(arr + i) <= *(arr+pivot))
+        {
+            printf("%c %c\n",*(arr+i),*(arr+pivot));
+            check++;
+            count++;
+            if(arr+i > check)
+                swapChr(arr+i,check);
+        }
+
+    printf("%d,count: %X check %X check-1 %d\n",count,(arr+count),check,((arr+count)==check)?(1):0);
+    //system("pause");
+    if(count >= 1)
+        quickSortStr(arr,count,count-1);
+    if(n-count >= 1)
+        quickSortStr(check+1,n-count,n-count-1);
+    
+}
+
+void mergeSortStr_I(char *arr, int n)
+{
+
+}
+
+void mergeSortStr_R(char *arr, int n)
+{
+
+}
 
 //File related functions
 
@@ -133,6 +222,13 @@ void insertionProcess(char *arr, int n)
     arrToFile("InsertionSort.txt",arr);
 }
 
+void quickProcess(char *arr, int n)
+{
+    quickSortStr(arr, n, n-1);
+
+    arrToFile("QuickSort.txt",arr);
+}
+
 void sortFile(char **argv)
 {
     int n;
@@ -154,8 +250,10 @@ void sortFile(char **argv)
     copyChrArr(arr,arr2);
     copyChrArr(arr,arr3);
 
-    bubbleProcess(arr1,n);
-    selectionProcess(arr2,n);
-    insertionProcess(arr3,n);
+    //bubbleProcess(arr1,n);
+    //selectionProcess(arr2,n);
+    //insertionProcess(arr3,n);
+
+    quickProcess(arr1, n);
 
 }
