@@ -30,7 +30,6 @@ int main(void)
     puts("\nApuntadores dobles a enteros:");
     printf("u = %X\n*u = %X\n**u = %d\n\nv = %X\n*v = %X\n**v = %d\n\nw = %X\n*w = %X\n**w = %d",u,*u,**u,v,*v,**v,w,*w,**w);
 
-
     return 0;
 }
 
