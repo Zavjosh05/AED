@@ -112,19 +112,15 @@ void quickSortStr(char *arr, int n,int pivot)
     for(i = 0; i < n; i++)
         if(*(arr + i) <= *(arr+pivot))
         {
-            printf("%c %c\n",*(arr+i),*(arr+pivot));
             check++;
             count++;
             if(arr+i > check)
                 swapChr(arr+i,check);
         }
-
-    printf("%d,count: %X check %X check-1 %d\n",count,(arr+count),check,((arr+count)==check)?(1):0);
-    //system("pause");
-    if(count >= 1)
+    if(count > 1)
         quickSortStr(arr,count,count-1);
-    if(n-count >= 1)
-        quickSortStr(check+1,n-count,n-count-1);
+    if(n-count > 1)
+        quickSortStr(check+1,n-count,pivot);
     
 }
 
