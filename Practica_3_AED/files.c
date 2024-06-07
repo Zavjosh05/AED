@@ -129,9 +129,29 @@ void mergeSortStr_I(char *arr, int n)
 
 }
 
-void mergeSortStr_R(char *arr, int n)
+void mergeSortStr_R(char *arr, int inf, int sup)
 {
+    mergeSortStr_R(arr,inf,sup/2);
+    mergeSortStr_R(arr,sup/2+1,sup);
 
+    
+}
+
+void recombMerg(char *arr, int inf, int sup)
+{
+    char *aux;
+    int i,j,k;
+
+    aux = (char*)malloc((sup-inf+1)*sizeof(char));
+
+    for(i = 0; i <= (sup - inf); i++)
+    {
+        j = (sup/2) + 1;
+        if(*(arr + i) < *(arr + j))
+        {
+            aux
+        }
+    }
 }
 
 //File related functions

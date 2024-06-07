@@ -50,7 +50,7 @@ void presentacion(int n)
     system("cls");
     puts("Zavaleta Guerrero Joshua Ivan\nBoleta = 2024630163\nGrupo: 2BM2");
     puts("Primer examen de estructura de datos");
-    printf("Ejercicio No. %d\n", n);
+    printf("Ejercicio No. %d\n\n", n);
 }
 
 void hyp6(int *******hyp,int ii,int jj,int kk,int ll,int mm,int n)
