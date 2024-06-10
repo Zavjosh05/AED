@@ -30,10 +30,13 @@ int main(void)
     paperPlane = arregloAvion(n);
     zeroAviones(paperPlane,n);
 
+    puts("Aviones: \n");
     printAviones(paperPlane,n);
+    puts("\n\n");
 
     lanzamientoAvion(paperPlane,n);
 
+    puts("Datos finales de aviones: \n");
     printAviones(paperPlane,n);
 
     return 0;
@@ -88,7 +91,7 @@ void lanzamientoAvion(Avion arr, int n)
     division = n/6;
     residuo = n%6;
 
-    printf("div: %d\nres: %d\n\n",division,residuo);
+    //printf("div: %d\nres: %d\n\n",division,residuo);
 
     if(division)
     {
