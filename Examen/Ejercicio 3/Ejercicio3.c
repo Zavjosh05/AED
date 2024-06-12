@@ -4,6 +4,7 @@
 
 void presentacion(int);
 void mSortProcess(int*,int,int);
+void mSortProcess2(int*,int,int);
 void mergeSort_R(int*,int,int);
 void mergeSort_I(int*,int);
 int* crearArreglo(int);
@@ -11,6 +12,10 @@ void fillZeroArr(int*,int);
 void llenarAleatoriamenteArreglo(int*,int);
 void liberarArreglo(int**);
 void printArreglo(int*,int);
+int powJ(unsigned int base, unsigned int exponente);
+int detectPow2(int);
+int detectExp2(int);
+int sumNivelesB2(int);
 
 int main(void)
 {
@@ -158,87 +163,182 @@ void mergeSort_R(int *arr, int inf, int sup)
     }     
 }
 
-int factorialJ(unsigned int base, unsigned int exponente)
+int powJ(unsigned int base, unsigned int exponente)
 {
     if(exponente == 0)
         return 1;
     else
-        return base*factorialJ(base,exponente-1);
+        return base*powJ(base,exponente-1);
 }
 
-int arbolBinarioNumNodos(int lvl)
-{
-    return (factorialJ(2,lvl+1)-1)/1;
+int detectPow2(int n){
+	int x = 2;
+
+	while(n/x != 0 || n/x==1){
+	    if(n/x == 1 && n%x == 0)
+	        return x;
+	    else
+		    x *= 2;
+    }
+
+	return x;
 }
 
-int numsMiddle(int n)
+int detectExp2(int n)
 {
-    if(n%4 == 0)
-        return n/4;
+    int count = 0, x = 1;
+
+    if(n == 1)
+        return 1;
+    
+    while(x != n)
+    {
+        x *= 2;
+        count++;
+    }
+
+    return count;
+}
+
+//toma como entrada detectPow2(int)
+int sumNivelesB2(int n)
+{
+    int x, i, count;
+    
+    x = detectExp2(n);
+    x--;
+    count = 0;
+
+    for(i = x; i >=0; i--)
+        count += powJ(2,i);
+
+    return count;
+}
+
+void mSortProcess2(int *arr, int inf, int sup)
+{
+    int i,j,k,l = sup-inf, middle;
+    int *aux;
+
+    aux = crearArreglo(l+1);
+    fillZeroArr(aux,l+1);
+
+    i = inf;
+    if(l == 1)
+        j = inf + 1;
     else
-        if(n%4 == 2)
-            return (n+2)/4;
+        if(l%2 == 0)
+            j = inf + l/2;
         else
-            if(n%4 == 1)
-                (n+3)/4;
-            else return (n+1)/4;
+            j = inf + (l/2)+1;
+    middle = j;
+    k = 0;
+
+    while(k <= l)
+    {
+        if(i < middle && j <= sup)
+        {
+            if(*(arr + i) >= *(arr + j))
+            {
+                *(aux + k) = *(arr + j);
+                k++;
+                j++;
+            }
+            else
+            {
+                *(aux + k) = *(arr + i);
+                k++;
+                i++;
+            }
+        }
+        else
+            if(i < middle)
+            {
+                *(aux + k) = *(arr + i);
+                i++;
+                k++;
+            }
+            else
+            {
+                *(aux + k) = *(arr + j);
+                j++;
+                k++;
+            }
+    }
+
+    for(i = inf, k = 0; k <= l; k++, i++)
+        *(arr + i) = *(aux + k);
 }
 
 void mergeSort_I(int *arr, int n)
 {
-    int *stackS,*stackI,*middle;
-    int limn,x,k,m;
+    int limn, i, count, x, j;
+	int *lims,*limi,*dif;
 
-    if(n%2 == 0)
-    {
-        limn = n/2;
-        printf("limn =%d\n",limn);
-        stackS = crearArreglo(limn);
-        stackI = crearArreglo(limn);
-    }
-    else
-    {
-        limn = n+1/2;
-        printf("limn =%d\n",limn);
-        stackS = crearArreglo(limn);
-        stackI = crearArreglo(limn);
-    }
+	limn = sumNivelesB2(detectPow2(n));
+    printf("%d\n",limn);
 
-    m = numsMiddle(n);
+	lims = crearArreglo(limn);
+	limi = crearArreglo(limn);
+    dif = crearArreglo(limn);
+    fillZeroArr(lims,limn);
+    fillZeroArr(limi,limn);
+    fillZeroArr(dif,limn);
 
-    middle = crearArreglo(m);
-    fillZeroArr(middle,m);
-    fillZeroArr(stackI,limn);
-    fillZeroArr(stackS,limn);
-
-    for(k = 0; k < limn; k++)
-    {
-        if(k == 0)
-        {
-            *(stackI + k) = 0;
-            if(limn == 1)
-                *(stackS + k) = 1;
+	for(i = 0, x = 1; n/x > 0 && i < limn;x*=2)
+	{
+		for(;i< limn; i++){
+            if(i == 0)
+            {
+                *limi = 0;
+                *lims = n-1;
+                *dif = *lims - *limi;
+                count = 1;
+                printArreglo(lims,limn);
+                printArreglo(limi,limn);
+                printArreglo(dif,limn);
+            }
             else
             {
-                *(stackS + k) = (n/2)-1;
+                *(limi + i) = *(limi + i-count);
+                if(*(dif + i-count) % 2 != 0)
+                    *(lims + i) = (*(dif + i-count)/2)+*(limi+i);
+                else
+                    *(lims + i) = (*(dif + i-count)/2)-1+*(limi+i);
+                *(dif + i) = *(lims + i) - *(limi + i);
+                printf("\ni = %d\n",i);
+                printf("limi = %d, lims = %d, dif = %d, count = %d\n",*(limi+i),*(lims+i),*(dif+i),count);
+                count++;
+                i++;
+                *(limi + i) = *(lims + i-1)+1;
+                *(lims + i) = *(lims + i-count);
+                *(dif + i) = *(lims + i) - *(limi + i);
+                printf("\ni = %d\n",i);
+                printf("limi = %d, lims = %d, dif = %d, count = %d\n",*(limi+i),*(lims+i),*(dif+i),count);
+
+                printArreglo(lims,limn);
+                printArreglo(limi,limn);
+                printArreglo(dif,limn);
             }
-        }
-        else
-        if(*(stackS +k-1)-*(stackI +k-1) >= 1)
-        {
-            x = (*(stackS +k-1)-*(stackI +k-1))/2;
+		}
+	}
 
-            *(stackI + k) = *(stackI +k-1);
-            *(stackS + k) = x + *(stackI + k);
-            k++;
-        }
+    printArreglo(limi,limn);
+    printArreglo(lims,limn);
+    printArreglo(dif,limn);
+    putchar('\n');
 
+    for(j = limn-1; j >= 0; j--){
+        printArreglo(arr,n);
+        printf("inf = %d, sup = %d\n",*(limi+j),*(lims+j));
+        if(*(limi+j) !=*(lims+j))
+            mSortProcess2(arr,*(limi + j),*(lims + j));
+        printArreglo(arr,n);
+        system("pause");
     }
+    printArreglo(arr,n);
 
-    puts("Inferiores");
-    printArreglo(stackI,limn);
-    puts("Superiores");
-    printArreglo(stackS,limn);
-    puts("ll");
-
+    liberarArreglo(limi);
+    liberarArreglo(lims);
+    liberarArreglo(dif);
 }
