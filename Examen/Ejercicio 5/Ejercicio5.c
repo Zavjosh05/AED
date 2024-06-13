@@ -1,32 +1,41 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
 
-typedef struct nodo
-{
-    int nivel;
-    int num;
-    int valor;
-} *Nodo,SNodo;
+void presentacion(int);
+int comportamientOnda(int,int);
+void arbolOnda(int,int,int,int);
+
+void presentacion(int);
 
 int main(void)
 {
-    Nodo tree;
-    int n;
+    int p, base;
+    unsigned int x;
 
+    presentacion(5);
+
+    puts("Ingresar la base del arbol");
+    scanf("%d",&base);
+    puts("Ingrese la profundidad del arbol (nivel desde 0 hasta n)");
+    scanf("%d",&p);
+    puts("Ingrese la magnitud incial de la onda");
+    scanf("%d",&x);
+
+    arbolOnda(base,0,p,x);
 
     return 0;
 }
 
-void arregloNodos(Nodo *arr,int n)
+void presentacion(int n)
 {
-    *arr = (Nodo)malloc(n*sizeof(SNodo));
+    system("cls");
+    puts("Zavaleta Guerrero Joshua Ivan\nBoleta = 2024630163\nGrupo: 2BM2");
+    puts("Primer examen de estructura de datos");
+    printf("Ejercicio No. %d\n\n", n);
 }
 
-int arbolNumNodos(int base,int lvl)
-{
-    return (factorialJ(base,lvl+1)-1)/(base-1);
-}
-
-void comportamientoOnda(Nodo av)
+int comportamientOnda(int val,int base)
 {
     int x;
 
@@ -35,18 +44,30 @@ void comportamientoOnda(Nodo av)
     #endif
 
     x = rand()%3;
+
+    if(x > 0)
+        return val/base;
+    else return 0;//esta opcion significa que la onda choco con algun objeto
 }
 
-void arbol(Nodo nod, int base, int lvl,int Lmax)
+void arbolOnda(int base, int lvl,int Lmax, int val)
 {
-    int i;
+    int i,j,x;
 
-    if(lvl <= Lmax)
+    if(lvl == 0)
+    {
+        printf("Nivel: 0, Nodo: 0, Valor: %d\n",val);
+        arbolOnda(base,++lvl,Lmax,val);
+    }
+
+    if(lvl <= Lmax || val != 0)
         for(i = 0; i < base; i++)
         {
-            (nod+i)->nivel = lvl;
-            (nod+i)->num = i;
-            (nod+i)->valor = ;
-            arbol(++nod, base, ++lvl, Lmax);
+            x = comportamientOnda(val,base);
+            for(j = 0; j < lvl; j++)
+                putchar('\t');
+            printf("Nivel: %d, Nodo: %d, Valor: %d\n",lvl,i,x);
+            if(x != 0)
+                arbolOnda(base, ++lvl, Lmax,x);
         }
 }

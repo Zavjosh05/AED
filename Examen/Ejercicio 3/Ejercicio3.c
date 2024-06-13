@@ -200,8 +200,7 @@ int detectExp2(int n)
     return count;
 }
 
-//toma como entrada detectPow2(int)
-int sumNivelesB2(int n)
+int sumNivelesB2(int n) //toma como entrada detectPow2(int)
 {
     int x, i, count;
     
@@ -272,11 +271,10 @@ void mSortProcess2(int *arr, int inf, int sup)
 
 void mergeSort_I(int *arr, int n)
 {
-    int limn, i, count, x, j;
+    int limn, i, j, x, count;
 	int *lims,*limi,*dif;
 
 	limn = sumNivelesB2(detectPow2(n));
-    printf("%d\n",limn);
 
 	lims = crearArreglo(limn);
 	limi = crearArreglo(limn);
@@ -285,60 +283,35 @@ void mergeSort_I(int *arr, int n)
     fillZeroArr(limi,limn);
     fillZeroArr(dif,limn);
 
-	for(i = 0, x = 1; n/x > 0 && i < limn;x*=2)
-	{
-		for(;i< limn; i++){
-            if(i == 0)
-            {
-                *limi = 0;
-                *lims = n-1;
-                *dif = *lims - *limi;
-                count = 1;
-                printArreglo(lims,limn);
-                printArreglo(limi,limn);
-                printArreglo(dif,limn);
-            }
+    for(i = 0;i< limn; i++){
+        if(i == 0)
+        {
+            *limi = 0;
+            *lims = n-1;
+            *dif = *lims - *limi;
+            count = 1;
+        }
+        else
+        {
+            *(limi + i) = *(limi + i-count);
+            if(*(dif + i-count) % 2 != 0)
+                *(lims + i) = (*(dif + i-count)/2)+*(limi+i);
             else
-            {
-                *(limi + i) = *(limi + i-count);
-                if(*(dif + i-count) % 2 != 0)
-                    *(lims + i) = (*(dif + i-count)/2)+*(limi+i);
-                else
-                    *(lims + i) = (*(dif + i-count)/2)-1+*(limi+i);
-                *(dif + i) = *(lims + i) - *(limi + i);
-                printf("\ni = %d\n",i);
-                printf("limi = %d, lims = %d, dif = %d, count = %d\n",*(limi+i),*(lims+i),*(dif+i),count);
-                count++;
-                i++;
-                *(limi + i) = *(lims + i-1)+1;
-                *(lims + i) = *(lims + i-count);
-                *(dif + i) = *(lims + i) - *(limi + i);
-                printf("\ni = %d\n",i);
-                printf("limi = %d, lims = %d, dif = %d, count = %d\n",*(limi+i),*(lims+i),*(dif+i),count);
+                *(lims + i) = (*(dif + i-count)/2)-1+*(limi+i);
+            *(dif + i) = *(lims + i) - *(limi + i);
+            count++;
+            i++;
+            *(limi + i) = *(lims + i-1)+1;
+            *(lims + i) = *(lims + i-count);
+            *(dif + i) = *(lims + i) - *(limi + i);
+        }
+    }
 
-                printArreglo(lims,limn);
-                printArreglo(limi,limn);
-                printArreglo(dif,limn);
-            }
-		}
-	}
-
-    printArreglo(limi,limn);
-    printArreglo(lims,limn);
-    printArreglo(dif,limn);
-    putchar('\n');
-
-    for(j = limn-1; j >= 0; j--){
-        printArreglo(arr,n);
-        printf("inf = %d, sup = %d\n",*(limi+j),*(lims+j));
+    for(j = limn-1; j >= 0; j--)
         if(*(limi+j) !=*(lims+j))
             mSortProcess2(arr,*(limi + j),*(lims + j));
-        printArreglo(arr,n);
-        system("pause");
-    }
-    printArreglo(arr,n);
 
-    liberarArreglo(limi);
-    liberarArreglo(lims);
-    liberarArreglo(dif);
+    liberarArreglo(&limi);
+    liberarArreglo(&lims);
+    liberarArreglo(&dif);
 }
