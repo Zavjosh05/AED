@@ -60,7 +60,7 @@ void arbolOnda(int base, int lvl,int Lmax, int val)
         arbolOnda(base,++lvl,Lmax,val);
     }
 
-    if(lvl <= Lmax || val != 0)
+    if(lvl <= Lmax)
         for(i = 0; i < base; i++)
         {
             x = comportamientOnda(val,base);
@@ -68,6 +68,6 @@ void arbolOnda(int base, int lvl,int Lmax, int val)
                 putchar('\t');
             printf("Nivel: %d, Nodo: %d, Valor: %d\n",lvl,i,x);
             if(x != 0)
-                arbolOnda(base, ++lvl, Lmax,x);
+                arbolOnda(base, lvl+1, Lmax,x);
         }
 }

@@ -1,7 +1,9 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
 
 void presentacion(int);
-void quickSortInt(int*,int,int);
+void quickSortInt(int*,int);
 void swapInt(int*,int*);
 int* crearArreglo(int);
 void fillZeroArr(int*,int);
@@ -15,6 +17,19 @@ int main(void)
     int n;
 
     presentacion(4);
+
+    puts("Ingresar extension del arreglo");
+    scanf("%d",&n);
+
+    arr = crearArreglo(n);
+    fillZeroArr(arr,n);
+    llenarAleatoriamenteArreglo(arr,n);
+    printArreglo(arr,n);
+
+    quickSortInt(arr,n-1);
+
+    puts("Arreglo ordenado:");
+    printArreglo(arr,n);
 
 
     return 0;
@@ -77,12 +92,12 @@ void swapInt(int *a1,int *a2)
     *a2 = aux;
 }
 
-void quickSortInt(int *arr, int n,int pivot)
+void quickSortInt(int *arr,int pivot)
 {
     int *check = arr-1;
     int i, count = -1;
 
-    for(i = 0; i < n; i++)
+    for(i = 0; i <= pivot; i++)
         if(*(arr + i) <= *(arr+pivot))
         {
             check++;
@@ -90,9 +105,14 @@ void quickSortInt(int *arr, int n,int pivot)
             if(arr+i > check)
                 swapInt(arr+i,check);
         }
+
     if(count > 1)
-        quickSortInt(arr,count,count-1);
-    if(n-count > 1)
-        quickSortInt(check+1,n-count,pivot);
+        quickSortInt(arr,count-1);
+    if(pivot-count > 1)
+        quickSortInt(++check,pivot-count-1);
+}
+
+void quickSort_I(int *arr, int n, int pivot)
+{
     
 }
