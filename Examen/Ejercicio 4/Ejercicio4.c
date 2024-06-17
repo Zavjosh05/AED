@@ -3,13 +3,17 @@
 #include<time.h>
 
 void presentacion(int);
-void quickSortInt(int*,int);
+void quickSort_R(int*,int);
+void quickSort_I(int*,int);
 void swapInt(int*,int*);
 int* crearArreglo(int);
 void fillZeroArr(int*,int);
 void llenarAleatoriamenteArreglo(int*,int);
 void liberarArreglo(int**);
 void printArreglo(int*,int);
+void printArregloParticion(int*,int,int);
+int detectPow2(int);
+int detectExp2(int);
 
 int main(void)
 {
@@ -26,7 +30,8 @@ int main(void)
     llenarAleatoriamenteArreglo(arr,n);
     printArreglo(arr,n);
 
-    quickSortInt(arr,n-1);
+    //quickSort_R(arr,n-1);
+    quickSort_I(arr,n);
 
     puts("Arreglo ordenado:");
     printArreglo(arr,n);
@@ -73,6 +78,15 @@ void printArreglo(int *arr,int n)
     putchar('\n');
 }
 
+void printArregloParticion(int *arr, int limi, int lims)
+{
+    int i;
+
+    for(i = limi; i <= lims; i++)
+        printf("%d ",*(arr+i));
+    putchar('\n');
+}
+
 void llenarAleatoriamenteArreglo(int *arr, int n)
 {
     int i;
@@ -92,7 +106,7 @@ void swapInt(int *a1,int *a2)
     *a2 = aux;
 }
 
-void quickSortInt(int *arr,int pivot)
+void quickSort_R(int *arr,int pivot)
 {
     int *check = arr-1;
     int i, count = -1;
@@ -107,12 +121,89 @@ void quickSortInt(int *arr,int pivot)
         }
 
     if(count > 1)
-        quickSortInt(arr,count-1);
+        quickSort_R(arr,count-1);
     if(pivot-count > 1)
-        quickSortInt(++check,pivot-count-1);
+        quickSort_R(++check,pivot-count-1);
 }
 
-void quickSort_I(int *arr, int n, int pivot)
+int detectPow2(int n)
 {
+	int x = 2;
+
+	while(n/x != 0 || n/x==1){
+	    if(n/x == 1 && n%x == 0)
+	        return x;
+	    else
+		    x *= 2;
+    }
+
+	return x;
+}
+
+int detectExp2(int n)
+{
+    int count = 0, x = 1;
+
+    if(n == 1)
+        return 1;
     
+    while(x != n)
+    {
+        x *= 2;
+        count++;
+    }
+
+    return count;
+}
+
+void quickSort_I(int *arr, int n)
+{
+    int i, j, m, count, aux;
+    int *lims, *limi;
+
+    if(n <= 1)
+        return;
+
+    m = detectExp2(detectPow2(n));
+
+    lims = crearArreglo(m);
+    limi = crearArreglo(m);
+
+    *limi = 0;
+    *lims = n-1;
+
+    j = 0;
+    while(j > -1)
+    {
+        count = *(limi+j)-1;
+
+        for(i = *(limi+j); i <= *(lims+j); i++)
+        {
+            if(*(arr + i) <= *(arr +*(lims+j)))
+            {
+                count++;
+                if(i > count)
+                    swapInt(arr+i,arr+count);
+            }
+        }
+        //printArregloParticion(arr,*(limi+j),*(lims+j));
+
+        if((count-1)-*(limi+j) >= 1 && *(lims+j)-(count+1) >= 1)
+        {
+            aux = *(lims+j);
+            *(lims+j) = count-1;
+            *(limi+j+1) = count+1;
+            *(lims+j+1) = aux;
+            j++;
+        }
+        else
+            if((count-1)-*(limi+j) >= 1)
+                *(lims+j) = count-1;
+            else
+                if(*(lims+j)-(count+1) >= 1)
+                    *(limi+j) = count+1;
+                else
+                    j--;
+    }
+
 }
