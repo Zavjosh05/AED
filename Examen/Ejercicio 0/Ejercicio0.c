@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 void presentacion(int);
 
@@ -13,7 +14,8 @@ int main(void)
 
     printf("\na = %d %% 6\n",boleta);
     a = boleta % 6;
-    printf("a = %d\n\n");
+    printf("a = %d, b = %d, c = %d, d = %d, e = %d, f = %d\n",a,b,c,d,e,f);
+    printf("&x = %X, &y = %X, &z = %X\n&u = %X, &v = %X, &w = %X\n\n",&x,&y,&z,&u,&v,&w);
 
     x = &f; y = &e; z = &d;
     a *= *z; b += *y - 42; c -= 13 * (*x);

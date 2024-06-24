@@ -149,7 +149,7 @@ void recombMerg(char *arr, int inf, int sup)
         j = (sup/2) + 1;
         if(*(arr + i) < *(arr + j))
         {
-            aux
+            aux;
         }
     }
 }
