@@ -27,6 +27,7 @@ int printStack(Stack);
 int printDataStack(Stack);
 int insertInfoNode(Node);
 int circularStackAddNode(Stack,Node);
+int circularStackDeleteNode(Stack,int);
 void menu(Stack);
 void mensaje(int);
 
@@ -237,8 +238,8 @@ int circularStackAddNode(Stack x,Node y)
                 return 0;
             }
 
-    int ind,i;
-    Node aux,aux2;
+    int ind;
+    Node aux;
 
     if(x->lenght == 0)
     {
@@ -254,7 +255,7 @@ int circularStackAddNode(Stack x,Node y)
         ind = 1;
         while(ind)
         {
-            if(aux->element < y->element)
+            if(aux->element <= y->element)
             {
                 if(aux == x->first)
                 {
@@ -304,14 +305,133 @@ int circularStackAddNode(Stack x,Node y)
     return 1;
 }
 
+int circularStackDeleteNode(Stack x, int x1)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+    if(x->lenght == 0)
+    {
+        mensaje(7);
+        return 0;
+    }
+    if(x->lenght == 1)
+    {
+        puts("Stack vaciado");
+        free(&(x->first));
+        x->first = NULL;
+        x->last = NULL;
+        x->lenght--;
+        return 1;
+    }
+
+    int i;
+    Node aux, aux2;
+
+    aux = x->first;
+    for(i = 0; i < x->lenght; i++)
+    {
+        if(aux->element == x1)
+        {
+            if(aux == x->first)
+            {
+                x->first = x->first->next;
+                x->last = x->last->before;
+                freeNode(&aux);
+                x->lenght--;
+                goto fin;
+            }
+            aux->before->next = aux->next;
+            aux->next->before = aux->before;
+            freeNode(&aux);
+            x->lenght--;
+            goto fin;
+        }
+        aux = aux->next;
+    }
+    if(i == x->lenght)
+        puts("Elemento no encontrado");
+    fin: return 1;
+}
+
+int randomNodeGenerator(Node *y,int n)
+{
+    #ifdef NDEBUG
+        srand(time(NULL));
+    #endif
+
+    createNode(y);
+    if(*y == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    initializeNode(*y);
+    (*y)->element = rand()%n;
+    return 1;
+}
+
+int circularRandomStackGenerator(Stack x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    int i,n;
+    Node y;
+
+    fseek(stdin,0,SEEK_END);
+    puts("Ingrese el número de elementos ");
+    scanf("%d",&n);
+
+    for(i = 0; i < n; i++)
+    {
+        randomNodeGenerator(&y,n);
+        circularStackAddNode(x,y);
+        
+        y = NULL;
+    }
+
+    return 1;
+}
+
+int circularStackEraser(Stack x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    int n = x->lenght, i;
+    Node aux;
+
+    aux = x->first;
+
+    for(i = 0; i < n; i++)
+    {
+        printStack(x);
+        circularStackDeleteNode(x,aux->element);
+        aux = aux->next;
+    }
+
+    return 1;
+}
+
 void menu(Stack x)
 {
-    int sel, ind = 1;
+    int sel, ind = 1, n, x1;
 
-    
-    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) consumir cola");
+    printStack(x);
+    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) Generar cola aleatoria\n(4) Consumir cola\n(5) salir");
     fseek(stdin,0,SEEK_END);
     scanf("%d",&sel);
+    fseek(stdin,0,SEEK_END);
 
     switch(sel)
     {
@@ -327,25 +447,44 @@ void menu(Stack x)
             printStack(x);
             break;
         case 2:
+            fseek(stdin,0,SEEK_END);
+            printStack(x);
+            if(x->lenght == 1)
+            {
+                circularStackDeleteNode(x,x1);
+            }
+            else
+            {
+                puts("Ingrese el elemento que desea eliminar");
+                scanf("%d",&x1);
+                circularStackDeleteNode(x,x1);
+            }
+            printStack(x);
             break;
         case 3:
+            circularRandomStackGenerator(x);
+            printStack(x);
+            break;
+        case 4:
+            circularStackEraser(x);
+            printStack(x);
+            break;
+        case 5:
+            goto fin;
             break;
         default:
             mensaje(0);
             menu(x);
             goto fin;
     }
-
-    puts("Desea hacer otra accion? (y/n)");
-    fseek(stdin,0,SEEK_END);
-    if(getchar() == 'y' || getchar() == 'Y')
-        menu(x);
+    //system("cls");
+    menu(x);
     
     fin:;
 }
 
 void mensaje(int n)
-{
-    char *msj[] = {"\nIngrese una opcion valida\n","\nNodo nulo\n","\nStack nulo\n","\nNodo liberado\n","\nStack liberado\n","\nNodo creado\n","\nStack creado"};
+{                   //           0                        1                 2                3                       4                    5               6                 7                
+    char *msj[] = {"\nIngrese una opcion valida\n","\nNodo nulo\n","\nStack nulo\n","\nNodo liberado\n","\nStack liberado\n","\nNodo creado\n","\nStack creado\n","\nStack sin elementos\n"};
     printf("%s\n",*(msj+n));
 }
