@@ -26,9 +26,13 @@ int printInfoNode(Node);
 int printDataNode(Node);
 int printStack(Stack);
 int printDataStack(Stack);
+int printAllDataStack(Stack);
 int insertInfoNode(Node);
 int circularStackAddNode(Stack,Node);
 int circularStackDeleteNode(Stack,int);
+int randomNodeGenerator(Node*,int);
+int circularRandomStackGenerator(Stack);
+int circularStackEraser(Stack,int);
 void menu(Stack);
 void mensaje(int);
 
