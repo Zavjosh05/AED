@@ -15,6 +15,7 @@ typedef struct stack
     int lenght;
 }*Stack, Size_stack;
 
+void presentacion(int);
 int createNode(Node*);
 int freeNode(Node*);
 int createStack(Stack*);
@@ -34,11 +35,12 @@ void mensaje(int);
 int main(void)
 {
     Stack x;
-    Node y,yy;
+    Node y;
+
+    presentacion(5);
 
     createStack(&x);
     initializeStack(x);
-    printf("lenght: %d\n",x->lenght);
     menu(x);
 
     freeStack(&x);
@@ -199,6 +201,24 @@ int printDataStack(Stack x)
     return 1;
 }
 
+int printAllDataStack(Stack x)
+{
+    if(!printDataStack)
+        return 0;
+    
+    int i;
+    Node aux;
+
+    aux = x->first;
+    for(i = 0; i < x->lenght; i++)
+    {
+        printDataNode(aux);
+        aux = aux->next;
+    }
+
+    return 1;
+}
+
 int insertInfoNode(Node y)
 {
     if(y == NULL)
@@ -248,6 +268,7 @@ int circularStackAddNode(Stack x,Node y)
         x->first = y;
         x->last = y;
         x->lenght++;
+        puts("1");
     }
     else
     {
@@ -267,6 +288,7 @@ int circularStackAddNode(Stack x,Node y)
                     if(x->lenght == 1)
                         aux->next = y;
                     x->lenght++;
+                    puts("2");
                     ind = 0;
                 }
                 else
@@ -276,6 +298,7 @@ int circularStackAddNode(Stack x,Node y)
                     aux->before = y;
                     y->before->next = y;
                     x->lenght++;
+                    puts("3");
                     ind = 0;
                 }
             }
@@ -287,17 +310,25 @@ int circularStackAddNode(Stack x,Node y)
                     x->first->next = y;
                     x->last->before = y;
                     x->lenght++;
+                    puts("4");
                     ind = 0;
                 }
                 else
                     if(aux == x->last->before)
                     {
+                        x->last->before = y;
                         y->next = aux->next;
                         aux->next = y;
                         y->before = aux;
                         x->lenght++;
+                        puts("5");
                         ind = 0;
                     }
+            /*if(ind == 0){
+                printDataNode(y);
+                printDataStack(x);
+                printDataNode(x->last->before);
+            }*/
             aux = aux->next;
         }
     }
@@ -320,7 +351,7 @@ int circularStackDeleteNode(Stack x, int x1)
     if(x->lenght == 1)
     {
         puts("Stack vaciado");
-        free(&(x->first));
+        freeNode(&(x->first));
         x->first = NULL;
         x->last = NULL;
         x->lenght--;
@@ -386,13 +417,14 @@ int circularRandomStackGenerator(Stack x)
     Node y;
 
     fseek(stdin,0,SEEK_END);
-    puts("Ingrese el número de elementos ");
+    puts("Ingrese el número de elementos a añadir");
     scanf("%d",&n);
 
     for(i = 0; i < n; i++)
     {
         randomNodeGenerator(&y,n);
         circularStackAddNode(x,y);
+        printStack(x);
         
         y = NULL;
     }
@@ -400,7 +432,8 @@ int circularRandomStackGenerator(Stack x)
     return 1;
 }
 
-int circularStackEraser(Stack x)
+//ind indica si se va a imprimir el proceso o no
+int circularStackEraser(Stack x, int ind)
 {
     if(x == NULL)
     {
@@ -411,13 +444,13 @@ int circularStackEraser(Stack x)
     int n = x->lenght, i;
     Node aux;
 
-    aux = x->first;
-
     for(i = 0; i < n; i++)
     {
-        printStack(x);
+        aux = x->first;
+        if(ind)
+            printStack(x);
         circularStackDeleteNode(x,aux->element);
-        aux = aux->next;
+        //aux = aux->next;
     }
 
     return 1;
@@ -427,12 +460,15 @@ void menu(Stack x)
 {
     int sel, ind = 1, n, x1;
 
+    printf("Cola: ");
     printStack(x);
-    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) Generar cola aleatoria\n(4) Consumir cola\n(5) salir");
+    printf("lenght: %d\n",x->lenght);
+    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) Generar elementos aleatorios\n(4) Consumir cola\n(5) Datos de Stack\n(6) Datos de los nodos del Stack\n(7) salir");
     fseek(stdin,0,SEEK_END);
     scanf("%d",&sel);
     fseek(stdin,0,SEEK_END);
 
+    system("cls");
     switch(sel)
     {
         case 1:
@@ -442,9 +478,8 @@ void menu(Stack x)
             insertInfoNode(y);
             printInfoNode(y);
             circularStackAddNode(x,y);
-            printDataNode(y);
-            printDataStack(x);
-            printStack(x);
+            //printDataNode(y);
+            //printDataStack(x);
             break;
         case 2:
             fseek(stdin,0,SEEK_END);
@@ -459,17 +494,21 @@ void menu(Stack x)
                 scanf("%d",&x1);
                 circularStackDeleteNode(x,x1);
             }
-            printStack(x);
             break;
         case 3:
             circularRandomStackGenerator(x);
-            printStack(x);
             break;
         case 4:
-            circularStackEraser(x);
-            printStack(x);
+            circularStackEraser(x,1);
             break;
         case 5:
+            printDataStack(x);
+            break;
+        case 6:
+            printAllDataStack(x);
+            break;
+        case 7:
+            circularStackEraser(x,1);
             goto fin;
             break;
         default:
@@ -477,14 +516,20 @@ void menu(Stack x)
             menu(x);
             goto fin;
     }
-    //system("cls");
     menu(x);
     
     fin:;
 }
 
 void mensaje(int n)
-{                   //           0                        1                 2                3                       4                    5               6                 7                
+{                   //           0                        1                 2                3                       4                5               6                        7                
     char *msj[] = {"\nIngrese una opcion valida\n","\nNodo nulo\n","\nStack nulo\n","\nNodo liberado\n","\nStack liberado\n","\nNodo creado\n","\nStack creado\n","\nStack sin elementos\n"};
     printf("%s\n",*(msj+n));
+}
+
+void presentacion(int n)
+{
+    system("cls");
+    puts("Zavaleta Guerrero Joshua Ivan\nBoleta = 2024630163\nGrupo: 2BM2");
+    printf("Practica No. %d\n\n", n);
 }
