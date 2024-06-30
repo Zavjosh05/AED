@@ -8,46 +8,46 @@ typedef struct node
     int element;
 }*Node, Size_node;
 
-typedef struct stack
+typedef struct queue
 {
     Node first;
     Node last;
     int lenght;
-}*Stack, Size_stack;
+}*Queue, Size_Queue;
 
 void presentacion(int);
 int createNode(Node*);
 int freeNode(Node*);
-int createStack(Stack*);
-int freeStack(Stack*);
+int createQueue(Queue*);
+int freeQueue(Queue*);
 int initializeNode(Node);
-int initializeStack(Stack);
+int initializeQueue(Queue);
 int printInfoNode(Node);
 int printDataNode(Node);
-int printStack(Stack);
-int printDataStack(Stack);
-int printAllDataStack(Stack);
+int printQueue(Queue);
+int printDataQueue(Queue);
+int printAllDataQueue(Queue);
 int insertInfoNode(Node);
-int circularStackAddNode(Stack,Node);
-int circularStackDeleteNode(Stack,int);
+int circularQueueAddNode(Queue,Node);
+int circularQueueDeleteNode(Queue,int);
 int randomNodeGenerator(Node*,int);
-int circularRandomStackGenerator(Stack);
-int circularStackEraser(Stack,int);
-void menu(Stack);
+int circularRandomQueueGenerator(Queue);
+int circularQueueEraser(Queue,int);
+void menu(Queue);
 void mensaje(int);
 
 int main(void)
 {
-    Stack x;
+    Queue x;
     Node y;
 
     presentacion(5);
 
-    createStack(&x);
-    initializeStack(x);
+    createQueue(&x);
+    initializeQueue(x);
     menu(x);
 
-    freeStack(&x);
+    freeQueue(&x);
 
     return 0;
 }
@@ -81,9 +81,9 @@ int freeNode(Node *x)
     return 1;
 }
 
-int createStack(Stack *x)
+int createQueue(Queue *x)
 {
-    *x = (Stack)malloc(sizeof(Size_stack));
+    *x = (Queue)malloc(sizeof(Size_Queue));
 
     if(*x == NULL) 
     {
@@ -95,7 +95,7 @@ int createStack(Stack *x)
     return 1;
 }
 
-int freeStack(Stack *x)
+int freeQueue(Queue *x)
 {
     if(*x == NULL)
     {
@@ -124,7 +124,7 @@ int initializeNode(Node x)
     return 1;
 }
 
-int initializeStack(Stack x)
+int initializeQueue(Queue x)
 {
     if(x == NULL)
     {
@@ -163,7 +163,7 @@ int printDataNode(Node y)
     return 1;
 }
 
-int printStack(Stack x)
+int printQueue(Queue x)
 {
     if(x == NULL)
     {
@@ -193,7 +193,7 @@ int printStack(Stack x)
     return 1;
 }
 
-int printDataStack(Stack x)
+int printDataQueue(Queue x)
 {
     if(x == NULL)
     {
@@ -201,13 +201,13 @@ int printDataStack(Stack x)
         return 1;
     }
 
-    printf("Stack: first: %X, last: %X, lenght: %d\n",x->first,x->last,x->lenght);
+    printf("Queue: first: %X, last: %X, lenght: %d\n",x->first,x->last,x->lenght);
     return 1;
 }
 
-int printAllDataStack(Stack x)
+int printAllDataQueue(Queue x)
 {
-    if(!printDataStack)
+    if(!printDataQueue)
         return 0;
     
     int i;
@@ -241,7 +241,7 @@ int insertInfoNode(Node y)
     return 1;
 }
 
-int circularStackAddNode(Stack x,Node y)
+int circularQueueAddNode(Queue x,Node y)
 {
     if(x == NULL && y == NULL)
     {
@@ -330,7 +330,7 @@ int circularStackAddNode(Stack x,Node y)
                     }
             /*if(ind == 0){
                 printDataNode(y);
-                printDataStack(x);
+                printDataQueue(x);
                 printDataNode(x->last->before);
             }*/
             aux = aux->next;
@@ -340,7 +340,7 @@ int circularStackAddNode(Stack x,Node y)
     return 1;
 }
 
-int circularStackDeleteNode(Stack x, int x1)
+int circularQueueDeleteNode(Queue x, int x1)
 {
     if(x == NULL)
     {
@@ -354,7 +354,7 @@ int circularStackDeleteNode(Stack x, int x1)
     }
     if(x->lenght == 1)
     {
-        puts("Stack vaciado");
+        puts("Queue vaciado");
         freeNode(&(x->first));
         x->first = NULL;
         x->last = NULL;
@@ -409,7 +409,7 @@ int randomNodeGenerator(Node *y,int n)
     return 1;
 }
 
-int circularRandomStackGenerator(Stack x)
+int circularRandomQueueGenerator(Queue x)
 {
     if(x == NULL)
     {
@@ -427,8 +427,8 @@ int circularRandomStackGenerator(Stack x)
     for(i = 0; i < n; i++)
     {
         randomNodeGenerator(&y,n);
-        circularStackAddNode(x,y);
-        printStack(x);
+        circularQueueAddNode(x,y);
+        printQueue(x);
         
         y = NULL;
     }
@@ -437,7 +437,7 @@ int circularRandomStackGenerator(Stack x)
 }
 
 //ind indica si se va a imprimir el proceso o no
-int circularStackEraser(Stack x, int ind)
+int circularQueueEraser(Queue x, int ind)
 {
     if(x == NULL)
     {
@@ -452,22 +452,22 @@ int circularStackEraser(Stack x, int ind)
     {
         aux = x->first;
         if(ind)
-            printStack(x);
-        circularStackDeleteNode(x,aux->element);
+            printQueue(x);
+        circularQueueDeleteNode(x,aux->element);
         //aux = aux->next;
     }
 
     return 1;
 }
 
-void menu(Stack x)
+void menu(Queue x)
 {
     int sel, ind = 1, n, x1;
 
     printf("Cola: ");
-    printStack(x);
+    printQueue(x);
     printf("lenght: %d\n",x->lenght);
-    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) Generar elementos aleatorios\n(4) Consumir cola\n(5) Datos de Stack\n(6) Datos de los nodos del Stack\n(7) salir");
+    puts("Desea:\n(1) Agregar un elemento\n(2) Eliminar un elemento\n(3) Generar elementos aleatorios\n(4) Consumir cola\n(5) Datos de Queue\n(6) Datos de los nodos del Queue\n(7) salir");
     fseek(stdin,0,SEEK_END);
     scanf("%d",&sel);
     fseek(stdin,0,SEEK_END);
@@ -481,38 +481,38 @@ void menu(Stack x)
             initializeNode(y);
             insertInfoNode(y);
             printInfoNode(y);
-            circularStackAddNode(x,y);
+            circularQueueAddNode(x,y);
             //printDataNode(y);
-            //printDataStack(x);
+            //printDataQueue(x);
             break;
         case 2:
             fseek(stdin,0,SEEK_END);
-            printStack(x);
+            printQueue(x);
             if(x->lenght == 1)
             {
-                circularStackDeleteNode(x,x1);
+                circularQueueDeleteNode(x,x1);
             }
             else
             {
                 puts("Ingrese el elemento que desea eliminar");
                 scanf("%d",&x1);
-                circularStackDeleteNode(x,x1);
+                circularQueueDeleteNode(x,x1);
             }
             break;
         case 3:
-            circularRandomStackGenerator(x);
+            circularRandomQueueGenerator(x);
             break;
         case 4:
-            circularStackEraser(x,1);
+            circularQueueEraser(x,1);
             break;
         case 5:
-            printDataStack(x);
+            printDataQueue(x);
             break;
         case 6:
-            printAllDataStack(x);
+            printAllDataQueue(x);
             break;
         case 7:
-            circularStackEraser(x,1);
+            circularQueueEraser(x,1);
             goto fin;
             break;
         default:
@@ -527,7 +527,7 @@ void menu(Stack x)
 
 void mensaje(int n)
 {                   //           0                        1                 2                3                       4                5               6                        7                
-    char *msj[] = {"\nIngrese una opcion valida\n","\nNodo nulo\n","\nStack nulo\n","\nNodo liberado\n","\nStack liberado\n","\nNodo creado\n","\nStack creado\n","\nStack sin elementos\n"};
+    char *msj[] = {"\nIngrese una opcion valida\n","\nNodo nulo\n","\nQueue nulo\n","\nNodo liberado\n","\nQueue liberado\n","\nNodo creado\n","\nQueue creado\n","\nQueue sin elementos\n"};
     printf("%s\n",*(msj+n));
 }
 
