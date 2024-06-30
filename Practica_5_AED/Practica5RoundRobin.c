@@ -1,5 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<windows.h>
+
+
 
 typedef struct node
 {
@@ -28,12 +31,14 @@ int printQueue(Queue);
 int printDataQueue(Queue);
 int printAllDataQueue(Queue);
 int insertInfoNode(Node);
+int insertInfoManuallyNode(Node,int);
 int circularQueueAddNode(Queue,Node);
 int circularQueueDeleteNode(Queue,int);
 int randomNodeGenerator(Node*,int);
 int circularRandomQueueGenerator(Queue);
 int circularQueueEraser(Queue,int);
 void menu(Queue);
+void roundRobinMenu(Queue);
 void mensaje(int);
 
 int main(void)
@@ -45,7 +50,7 @@ int main(void)
 
     createQueue(&x);
     initializeQueue(x);
-    menu(x);
+    roundRobinMenu(x);
 
     freeQueue(&x);
 
@@ -62,7 +67,7 @@ int createNode(Node *x)
         return 0;
     }
     
-    mensaje(5);
+    //mensaje(5);
     return 1;
 }
 
@@ -76,7 +81,7 @@ int freeNode(Node *x)
 
     free(*x);
     *x = NULL;
-    mensaje(3);
+    //mensaje(3);
 
     return 1;
 }
@@ -91,7 +96,7 @@ int createQueue(Queue *x)
         return 0;
     }
 
-    mensaje(6);
+    //mensaje(6);
     return 1;
 }
 
@@ -193,6 +198,36 @@ int printQueue(Queue x)
     return 1;
 }
 
+int printQueueRoundRobin(Queue x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    int i;
+    Node aux;
+    aux = x->first;
+
+    if(x->lenght == 0)
+        printf("<>\n");
+    else
+        for(i = 0; i < x->lenght; i++)
+        {
+            if(i == 0) printf("< ");
+        
+            if(i == x->lenght-1)
+                printf("%c >\n",aux->element);
+            else
+                printf("%c, ",aux->element);
+            
+            aux = aux->next;
+        }
+
+    return 1;
+}
+
 int printDataQueue(Queue x)
 {
     if(x == NULL)
@@ -241,6 +276,40 @@ int insertInfoNode(Node y)
     return 1;
 }
 
+int insertInfoManuallyNode(Node y, int elem)
+{
+    if(y == NULL)
+    {
+        mensaje(1);
+        return 0;
+    }
+
+    y->element = elem;
+    return 1;
+}
+
+int copyQueue(Queue x,Queue *y)
+{
+    Node aux,aux2;
+    int i;
+
+    createQueue(y);
+    initializeQueue(*y);
+
+    aux = x->first;
+    for(i = 0; i < x->lenght; i++)
+    {
+        createNode(&aux2);
+        initializeNode(aux2);
+        aux2->element = aux->element+65;
+        circularQueueAddNode(*y,aux2);
+        aux2 = NULL;
+        aux = aux->next;
+    }
+
+    return 1;
+}
+
 int circularQueueAddNode(Queue x,Node y)
 {
     if(x == NULL && y == NULL)
@@ -284,6 +353,7 @@ int circularQueueAddNode(Queue x,Node y)
             {
                 if(aux == x->first)
                 {
+                    x->last->before->next = y;
                     x->first = y;
                     x->last = y;
                     y->next = aux;
@@ -366,14 +436,18 @@ int circularQueueDeleteNode(Queue x, int x1)
     Node aux, aux2;
 
     aux = x->first;
+
     for(i = 0; i < x->lenght; i++)
     {
         if(aux->element == x1)
         {
             if(aux == x->first)
             {
+
+                x->first->next->before = x->last->before;
+                x->last->before->next = x->first->next;
                 x->first = x->first->next;
-                x->last = x->last->before;
+                x->last = x->first;
                 freeNode(&aux);
                 x->lenght--;
                 goto fin;
@@ -524,6 +598,195 @@ void menu(Queue x)
     
     fin:;
 }
+
+int roundRobinQueueGenerator(Queue x, int n)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    int i;
+    Node y;
+
+
+    for(i = 1; i <= n; i++)
+    {
+        createNode(&y);
+        initializeNode(y);
+        insertInfoManuallyNode(y,i);
+        circularQueueAddNode(x,y);
+        y = NULL;
+    }
+    return 1;
+}
+
+int moveLeftQueue(Queue x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+
+    Node aux;
+    int ind;
+
+    if(x->lenght == 0)
+        mensaje(7);
+    else
+        if(x->lenght == 1)
+            puts("Nada que mover");
+        else
+            if(x->lenght > 1)
+            {
+                x->first = x->first->next;
+                x->last = x->first;
+            }
+
+    return 1;
+}
+
+int roundRobin(Queue x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        return 0;
+    }
+    if(x->lenght == 0)
+    {
+        mensaje(7);
+        return 0;
+    }
+    
+    int quantum, quantum2, ind = 1, ind2 = 1, res, res2;
+    Queue y;
+
+    system("cls");
+    puts("Ingrese el valor del quantum (en segundos)");
+    fseek(stdin,0,SEEK_END);
+    scanf("%d",&quantum);
+    copyQueue(x,&y);
+    putchar('\n');
+    while(ind)
+    {
+        quantum2 = quantum;
+        quantum2Process: ;
+        if(x->lenght == 0) goto fin; 
+        puts("Procesos:");
+        printQueueRoundRobin(y);
+        puts("Tiempo de procesos (en segundos)");
+        printQueue(x);
+        res = x->first->element-quantum2;
+        printf("res: %d\n",res);
+        if(res == 0)
+        {
+            printf("Quantum: %d\n",quantum2);
+            printf("Proceso en marcha: %c\n",y->first->element);
+            Sleep(1000*quantum2);
+            printf("Tiempo restante: %d\n\n",res);
+            circularQueueDeleteNode(x,x->first->element);
+            circularQueueDeleteNode(y,y->first->element);
+        }
+        else
+            if(res > 0)
+            {
+                printf("Quantum: %d\n",quantum2);
+                printf("Proceso en marcha: %c\n",y->first->element);
+                Sleep(1000*quantum2);
+                printf("Tiempo restante: %d\n\n",res);
+                x->first->element = res;
+                moveLeftQueue(x);
+                moveLeftQueue(y);
+            }
+            else
+                if(res < 0)
+                {
+                    quantum2 = quantum2+res;
+                    printf("Quantum: %d\n",quantum);
+                    printf("Quantum2: %d\n",quantum2);
+                    printf("Proceso en marcha: %c\n",y->first->element);
+                    Sleep(1000*quantum2);
+                    x->first->element = x->first->element-quantum2;
+                    quantum2 = quantum-quantum2;
+                    printf("Quantum2: %d\n",quantum2);
+                    printf("Tiempo restante: %d\n\n",x->first->element);
+                    circularQueueDeleteNode(x,x->first->element);
+                    circularQueueDeleteNode(y,y->first->element);
+                    if(quantum2 > 0)
+                        goto quantum2Process;
+                }
+        
+        if(x->lenght == 0)
+            ind = 0;
+        //system("pause");
+    }
+    fin: ;
+    puts("RoundRobin concluido con exito\n");
+    roundRobinMenu(x);
+}
+
+void roundRobinMenu(Queue x)
+{
+    if(x == NULL)
+    {
+        mensaje(2);
+        goto fin;
+    }
+
+    int quantum, sel, n;
+
+    printf("Cola: ");
+    printQueue(x);
+    printf("lenght: %d\n",x->lenght);
+    puts("Desea:\n(1) Generar procesos\n(2) Agregar un proceso\n(3) Eliminar proceso\n(4) Eliminar cola de procesos\n(5) RoundRobin\n(6) salir");
+    fseek(stdin,0,SEEK_END);
+    scanf("%d",&sel);
+    fseek(stdin,0,SEEK_END);
+
+    system("cls");
+    switch(sel)
+    {
+        case 1:
+            puts("Ingresar el numero de procesos a insertar");
+            scanf("%d",&n);
+            roundRobinQueueGenerator(x,n);
+            break;
+        case 2:
+            Node y;
+            createNode(&y);
+            initializeNode(y);
+            insertInfoNode(y);
+            printInfoNode(y);
+            circularQueueAddNode(x,y);
+            break;
+        case 3:
+            puts("Ingrese el elemento que desea eliminar");
+            scanf("%d",&n);
+            circularQueueDeleteNode(x,n);
+            break;
+        case 4:
+            circularQueueEraser(x,1);
+            break;
+        case 5:
+            roundRobin(x);
+            break;
+        case 6:
+            circularQueueEraser(x,1);
+            goto fin;
+            break;
+        default:
+            mensaje(0);
+            roundRobinMenu(x);
+            goto fin;
+    }
+    roundRobinMenu(x);
+
+    fin:;
+}
+
 
 void mensaje(int n)
 {                   //           0                        1                 2                3                       4                5               6                        7                
