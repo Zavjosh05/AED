@@ -19,7 +19,6 @@ typedef struct pila
 int crearPila(Pila *p);
 int insertarElemento(Pila p, Elemento e);
 int quitarElemento(Pila p, Elemento *e);
-int quitarTope(Pila p);
 int consultarTope(Pila p, Elemento *e);
 int destruirPila(Pila *q);
 int imprimirPila(Pila p);

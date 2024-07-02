@@ -92,33 +92,6 @@ int quitarElemento(Pila p, Elemento *e)
 	return(FALSO);
 }
 
-int quitarTope(Pila p)
-{
-	if (p==NULL)
-	  return(FALSO);
-	  
-	if (p->longitud==0)
-	  return(FALSO);
-
-	Nodo abajo;
-
-	abajo = p->tope->enlaceA;
-	desconectarEnlaceA(p->tope);
-	destruirNodo(&(p->tope));
-
-	p->tope = abajo;
-	p->longitud--;
-	
-	if(p->longitud == 0)
-	{
-		p->base = NULL;
-		p->tope = NULL;
-	}
-
-	return(VERDADERO);
-	
-}
-
 int consultarTope(Pila p, Elemento *e)
 {
 	int sw= FALSO;
@@ -177,7 +150,7 @@ int imprimirPila(Pila p)
 	Nodo siguiente= NULL, nodo= NULL;
 	Elemento e= NULL;
 	int sw= FALSO;
-	char dato= 0;
+	int dato= 0;
 			
 	printf("<");
 	if (p==NULL)
@@ -189,10 +162,7 @@ int imprimirPila(Pila p)
 	{
 		leerElemento(nodo, &e);
 		leerDato(e, &dato);
-		if(nodo == p->base)
-			printf("%c", dato);
-		else
-			printf("%c, ", dato);
+		printf("%d, ", dato);
 		
 		sw= consultarEnlaceA(nodo, &siguiente);
 		if (sw==FALSO)

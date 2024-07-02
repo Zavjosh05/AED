@@ -1,0 +1,15 @@
+int countChrFile(FILE*);
+void fileToArr(FILE*,char*);
+void arrToFile(char*,char*);
+void sortFile(char**);
+void swapChr(char*,char*);
+void copyChrArr(char*,char*);
+void bubbleSortStr(char*,int);
+void selectionSortStr(char*,int);
+void insertionSortStr(char*,int);
+void quickSortStr();
+void mergeSortStr_I();
+void mergeSortStr_R();
+void bubbleProcess(char*,int);
+void selectionProcess(char*,int);
+void insertionProcess(char*,int);
