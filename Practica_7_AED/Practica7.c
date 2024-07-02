@@ -165,6 +165,7 @@ void menu(Lista list)
             break;
        
         case 3:
+            system("cls");
             puts("Original: ");
             imprimirLista(list);
             puts("Sorteo por MergeSort:");
